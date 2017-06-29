@@ -24,8 +24,10 @@ namespace ppr
    * @param L          Number of entries (nodes) for each source to store during computation.
    * @param iterations Max number of iterations of the algorithm (it might be stopped by the tolerance).
    * @param damping    Damping factor, a la Pagerank.
-   * @param tolerance  Stopping tolerance based on the norm-1 between old and new top-L
-   * maps of each node.
+   * @param tolerance  Stopping tolerance based on the norm-1 between old and new top-L, a negative
+   * tolerance can be used to have no tolerance at all, making it so that the
+   * algorithm stops only once the max number of iterations are done.
+   * @return maps of each node.
    */
   template<typename Key>
   unordered_map<Key, unordered_map<Key, double>> grank(const unordered_map<Key, vector<Key>>& graph, //the graph
@@ -41,6 +43,8 @@ namespace ppr
     if(K > L){cout << "K must be <= L" << endl; exit(EXIT_FAILURE);}
     if(iterations <= 0){cout << "iterations must be positive" << endl; exit(EXIT_FAILURE);}
     if(damping < 0 || damping > 1){cout << "damping must be [0,1]" << endl; exit(EXIT_FAILURE);}
+    //note: no checks on tolerance to allow having no tolerance at all by setting
+    //it to a negative number
 
     //allocate scores maps
     unordered_map<Key, unordered_map<Key, double>> scores;

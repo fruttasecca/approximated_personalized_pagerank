@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 add_compile_options(-std=c++11)
 
 include_directories(include)
-set(HEADER_FILES include/kendall.h include/grank.h include/pprInternal.h)
+set(HEADER_FILES include/kendall.h include/grank.h include/pprInternal.h 
+include/pprSingleSource.h)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -flto -march=native")
 project (ppr)

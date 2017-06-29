@@ -49,7 +49,6 @@ namespace ppr
         double diff = tolerance;
         for(size_t i = 0; i < iterations && diff >= tolerance; i++)
         {
-          cout << i << endl;
             diff = 0;
             //clear the map and set the score of the source at the teleport contribution
             nextScores.clear();

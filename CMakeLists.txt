@@ -2,9 +2,9 @@ cmake_minimum_required (VERSION 2.6)
 add_compile_options(-std=c++11)
 
 include_directories(include)
-set(HEADER_FILES include/kendall.h)
+set(HEADER_FILES include/kendall.h include/grank.h include/pprInternal.h)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -flto -march=native")
 project (ppr)
 
 add_executable(ppr src/main.cc ${HEADER_FILES})
@@ -19,14 +19,14 @@ execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
 execute_process(COMMAND ${CMAKE_COMMAND} --build .
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
- 
+
 
 # Add googletest directly to our build. This adds
 # the following targets: gtest, gtest_main, gmock
 # and gmock_main
 add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
                  ${CMAKE_BINARY_DIR}/googletest-build)
- 
+
 # The gtest/gmock targets carry header search path
 # dependencies automatically when using CMake 2.8.11 or
 # later. Otherwise we have to add them here ourselves.

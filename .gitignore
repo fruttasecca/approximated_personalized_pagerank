@@ -50,7 +50,14 @@ testPpr
 *.swo
 
 
-#perf stuff
+#perf/valgrind/profiling stuff
 perf.data
 perf.data.old
+callgrind.out.*
+gprof2dot.py
+output.svg
+
+
+#csv files
+*.csv
 

@@ -132,7 +132,26 @@ namespace ppr
 
       return res;
     }
+
+    /**
+     * Returns the jaccard index between the two sets.
+     * @param  m1 First map.
+     * @param  m2 Second map.
+     * @return Jaccard index of the two sets.
+     */
+    template<typename Key>
+    double jaccard(const unordered_set<Key>& m1, const unordered_set<Key>& m2)
+    {
+      if(m1.empty() && m2.empty())
+        return 1.0;
+      else
+      {
+        vector<Key> intersection;
+        std::set_intersection(m1.cbegin(), m1.cend(), m2.cbegin(), m2.cend(), std::back_inserter(intersection));
+        return (((double) intersection.size())/(m1.size() + m2.size() - intersection.size()));
+      }
+    }
+
   }
 }
-
 #endif

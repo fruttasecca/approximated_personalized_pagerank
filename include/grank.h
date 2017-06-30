@@ -81,7 +81,6 @@ namespace ppr
     for(size_t i = 0; i < iterations && maxDiff >= tolerance; i++)
     {
       maxDiff = 0;
-      cout << "iterations: " << i << endl;
 
       for(const Key& v: partitions.first)
       {

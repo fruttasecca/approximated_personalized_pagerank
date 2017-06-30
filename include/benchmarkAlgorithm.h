@@ -78,7 +78,7 @@ namespace ppr
     double kendallAverage = 0;
     double kendallMin = 1.0;
     double averageMapSize = 0;
-    for(size_t i = 0; i < nodes.size(); i++)
+    for(size_t i = 0, iEnd = std::min(nodes.size(), testNodes); i < iEnd; i++)
       {
         const Key& node = nodes[i];
         const unordered_map<Key, double>& otherAlgo = ppr.find(node)->second;
@@ -125,9 +125,9 @@ namespace ppr
         averageMapSize += otherAlgo.size();
       }
 
-    jaccardAverage /= nodes.size();
-    kendallAverage /= nodes.size();
-    averageMapSize /= nodes.size();
+    jaccardAverage /= std::min(nodes.size(), testNodes);
+    kendallAverage /= std::min(nodes.size(), testNodes);
+    averageMapSize /= std::min(nodes.size(), testNodes);
     result["jaccard average"] = jaccardAverage;
     result["jaccard min"] = jaccardMin;
     result["kendall average"] = kendallAverage;

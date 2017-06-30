@@ -8,10 +8,12 @@
 #include <utility>//make pair
 #include <queue>
 #include <stdlib.h>//exit
+#include <iostream>
 
 using std::unordered_set;
 using std::unordered_map;
 using std::queue;
+using std::cout; using std::endl;
 
 namespace ppr
 {
@@ -146,9 +148,11 @@ namespace ppr
         return 1.0;
       else
       {
-        vector<Key> intersection;
-        std::set_intersection(m1.cbegin(), m1.cend(), m2.cbegin(), m2.cend(), std::back_inserter(intersection));
-        return (((double) intersection.size())/(m1.size() + m2.size() - intersection.size()));
+        size_t intersection = 0;
+        for(const Key& k: m1)
+          if(m2.find(k) != m2.end())
+            intersection++;
+        return (((double) intersection)/(m1.size() + m2.size() - intersection));
       }
     }
 

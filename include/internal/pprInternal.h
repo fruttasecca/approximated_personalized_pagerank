@@ -34,6 +34,8 @@ namespace ppr
       for(const auto& keyVal: graph)
       {
         const Key& node = keyVal.first;
+        //init predecessors[v] to an empty vector, in case the node has no successors
+        predecessors[node];
         const vector<Key>& successors = keyVal.second;
 
         for(const Key& v: successors)

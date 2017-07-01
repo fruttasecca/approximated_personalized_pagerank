@@ -43,7 +43,6 @@ TEST(findPartitions, twoPartitions1Node)
   }
 
   auto ps = findPartitions(graph);
-  cout << "p1: " << ps.first.size() << " p2: " << ps.second.size() << endl;
   ASSERT_TRUE(
       (ps.first.size() == 1 && ps.second.size() == (n - 1)) ||
       (ps.first.size() == (n - 1) && ps.second.size() == 1));

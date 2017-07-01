@@ -40,7 +40,7 @@ endif()
 
 #########test
 include_directories(googletest-src/googletest/include/gtest)
-add_executable(pprTest test/internal/jaccardTest.cc test/internal/keepTopTest.cc test/internal/norm1Test.cc ${HEADER_FILES} ${INTERNAL_HEADER_FILES})
+add_executable(pprTest test/internal/jaccardTest.cc test/internal/keepTopTest.cc test/internal/norm1Test.cc test/internal/findPartitionsTest.cc ${HEADER_FILES} ${INTERNAL_HEADER_FILES})
 target_link_libraries(pprTest gtest gtest_main)
 add_test(pprTest pprTest)
 #make it so that "make tests" will build pprTest and gtest

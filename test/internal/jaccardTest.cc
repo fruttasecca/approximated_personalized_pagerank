@@ -9,27 +9,27 @@ using namespace std;
 using ppr::pprInternal::jaccard;
 using std::unordered_set;
 
-TEST(testElements, testEmpty)
+TEST(jaccard, testEmpty)
 {
   unordered_set<int> s1, s2;
   ASSERT_EQ(jaccard(s1,s2), 1.0);
 }
 
-TEST(testElements, testOneElement1)
+TEST(jaccard, testOneElement1)
 {
   unordered_set<int> s1, s2;
   s1.insert(2);
   ASSERT_EQ(jaccard(s1,s2), 0.0);
 }
 
-TEST(testElements, testOneElement1_1)
+TEST(jaccard, testOneElement1_1)
 {
   unordered_set<int> s1, s2;
   s2.insert(2);
   ASSERT_EQ(jaccard(s1,s2), 0.0);
 }
 
-TEST(testElements, testOneElement2)
+TEST(jaccard, testOneElement2)
 {
   unordered_set<int> s1, s2;
   s1.insert(2);
@@ -37,7 +37,7 @@ TEST(testElements, testOneElement2)
   ASSERT_EQ(jaccard(s1,s2), 0.0);
 }
 
-TEST(testElements, testOneElement3)
+TEST(jaccard, testOneElement3)
 {
   unordered_set<int> s1, s2;
   s1.insert(-2);
@@ -45,7 +45,7 @@ TEST(testElements, testOneElement3)
   ASSERT_EQ(jaccard(s1,s2), 1.0);
 }
 
-TEST(testSets, testIdenticallyPopulatedSets)
+TEST(jaccard, testIdenticallyPopulatedSets)
 {
   unordered_set<int> s1, s2;
   for(int i = 0; i < 100; i++)
@@ -56,7 +56,7 @@ TEST(testSets, testIdenticallyPopulatedSets)
   ASSERT_EQ(jaccard(s1,s2), 1.0);
 }
 
-TEST(testSets, testIdenticalSets)
+TEST(jaccard, testIdenticalSets)
 {
   unordered_set<int> s1, s2;
   for(int i = 0; i < 100; i++)
@@ -67,7 +67,7 @@ TEST(testSets, testIdenticalSets)
   ASSERT_EQ(jaccard(s1,s2), 1.0);
 }
 
-TEST(testSets, testTotallyDifferentSets)
+TEST(jaccard, testTotallyDifferentSets)
 {
   unordered_set<int> s1, s2;
   for(int i = 1; i < 100; i++)
@@ -78,7 +78,7 @@ TEST(testSets, testTotallyDifferentSets)
   ASSERT_EQ(jaccard(s1,s2), 0.0);
 }
 
-TEST(testSets, testHalfJaccard)
+TEST(jaccard, testHalfJaccard)
 {
   unordered_set<int> s1, s2;
   for(int i = 0; i < 100; i++)
@@ -90,7 +90,7 @@ TEST(testSets, testHalfJaccard)
   ASSERT_EQ(jaccard(s1,s2), 0.5);
 }
 
-TEST(testSets, testPercentJaccard)
+TEST(jaccard, testPercentJaccard)
 {
   unordered_set<int> s1, s2;
   //init a set with ints from 0 to 99

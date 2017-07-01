@@ -14,6 +14,8 @@ using std::unordered_set;
 using std::unordered_map;
 using std::queue;
 using std::cout; using std::endl;
+using std::pair;
+using std::vector;
 
 namespace ppr
 {

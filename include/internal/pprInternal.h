@@ -79,13 +79,16 @@ namespace ppr
     /**
      * Keep the top-L scoring elements (key-val pairs), a pair scores better
      * than another if it's value is greater than the value of the other.
+     * If L is greater than the size of the map the function call has no effect.
      * @param L Number of elements to retain.
      * @param m Unordered_map for which to keep the top-L elements.
      */
     template<typename Key>
     inline void keepTop(size_t L, unordered_map<Key, double>& m)
+    {
+      if(m.size() > L)
       {
-        //make vector of pairs and sort it
+        //make vectors of pairs and partially sort it
         vector<pair<Key, double>> data(m.cbegin(), m.cend());
 
         std::nth_element(data.begin(), data.begin() + L, data.end(),
@@ -100,13 +103,14 @@ namespace ppr
         }
         else
         {
-            //if there would be a lot of elements to erase just make another map
-            //and fill it, then swap contents
-            unordered_map<Key, double> newMap;
-            newMap.reserve(m.size());
-            newMap.insert(data.cbegin(), data.cbegin() + L);
-            newMap.swap(m);
+          //if there would be a lot of elements to erase just make another map
+          //and fill it, then swap contents
+          unordered_map<Key, double> newMap;
+          newMap.reserve(m.size());
+          newMap.insert(data.cbegin(), data.cbegin() + L);
+          newMap.swap(m);
         }
+      }
     }
 
 

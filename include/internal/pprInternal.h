@@ -29,6 +29,17 @@ namespace ppr
     template<typename Key>
     inline pair<unordered_set<Key>, unordered_set<Key>> findPartitions(const unordered_map<Key, vector<Key>>& graph)
     {
+      //get list of predecessors for each node
+      unordered_map<Key, vector<Key>>& predecessors;
+      for(const auto& keyVal: graph)
+      {
+        const Key& node = keyVal.first;
+        const vector<Key>& successors = KeyVal.second;
+
+        for(const Key& v: successors)
+          predecessors[v].push_back(node);
+      }
+
       pair<unordered_set<Key>, unordered_set<Key>> partitions(std::make_pair(unordered_set<Key>(), unordered_set<Key>()));
 
       //queue for going breadth first
@@ -67,6 +78,16 @@ namespace ppr
               visited.insert(successor);
               currentPartition.insert(successor);
               que.push(successor);
+            }
+          }
+
+          for(const Key& predecessor: predecessors.find(next)->second)
+          {
+            if(visited.find(predecessor) == visited.cend())
+            {
+              visited.insert(predecessor);
+              currentPartition.insert(predecessor);
+              que.push(predecessor);
             }
           }
         }

@@ -34,7 +34,7 @@ namespace ppr
       for(const auto& keyVal: graph)
       {
         const Key& node = keyVal.first;
-        const vector<Key>& successors = KeyVal.second;
+        const vector<Key>& successors = keyVal.second;
 
         for(const Key& v: successors)
           predecessors[v].push_back(node);

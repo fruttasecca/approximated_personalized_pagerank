@@ -18,8 +18,12 @@ using std::cout; using std::endl;
 namespace ppr
 {
   /**
-   * [grank description] Approximated Personalized Pagerank for all nodes in the graph.
-   * @param graph      Grap for which to calculate ppr for all sources.
+   * Approximated Personalized Pagerank for all nodes in the graph. The graph
+   * is an unordered_map where each key is a node, and is mapped to a vector of
+   * nodes for which an edge exists between the key node and the nodes in the vector.
+   * Nodes which have no edges must still be part of the map, and are mapped to an
+   * empty vector.
+   * @param graph      Graph for which to calculate ppr for all sources.
    * @param K          Number of entries (nodes) for each source, the ppr top-K scoring nodes for the source node.
    * @param L          Number of entries (nodes) for each source to store during computation.
    * @param iterations Max number of iterations of the algorithm (it might be stopped by the tolerance).

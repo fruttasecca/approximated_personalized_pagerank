@@ -71,8 +71,7 @@ namespace ppr
       for(const Key& successor: successors)
         scores[v][successor] += factor;
 
-      if(scores[v].size() > L)
-        pprInternal::keepTop(L, scores[v]);
+      pprInternal::keepTop(L, scores[v]);
     }
 
     pair<unordered_set<Key>, unordered_set<Key>> partitions = pprInternal::findPartitions<Key>(graph);
@@ -106,8 +105,7 @@ namespace ppr
         }
 
         //keep the top L values only
-        if(currentMap.size() > L)
-          pprInternal::keepTop(L, currentMap);
+        pprInternal::keepTop(L, currentMap);
 
         //check difference between new and old map for this now and eventually
         //updated the maxDiff
@@ -129,10 +127,7 @@ namespace ppr
     }
 
     for(auto& keyVal: graph)
-    {
-      if(scores[keyVal.first].size() > K)
-        pprInternal::keepTop(K, scores[keyVal.first]);
-    }
+      pprInternal::keepTop(K, scores[keyVal.first]);
     return scores;
   }
 }

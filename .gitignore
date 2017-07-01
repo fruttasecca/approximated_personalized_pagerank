@@ -41,7 +41,7 @@ CTestTestfile.cmake
 *.out
 *.app
 ppr
-testPpr
+pprTest
 
 
 #vim stuff

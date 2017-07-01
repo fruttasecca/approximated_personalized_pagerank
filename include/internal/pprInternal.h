@@ -30,11 +30,13 @@ namespace ppr
     inline pair<unordered_set<Key>, unordered_set<Key>> findPartitions(const unordered_map<Key, vector<Key>>& graph)
     {
       //get list of predecessors for each node
-      unordered_map<Key, vector<Key>> predecessors;
+      unordered_map<Key, vector<Key>>& predecessors;
       for(const auto& keyVal: graph)
       {
         const Key& node = keyVal.first;
-        const vector<Key>& successors = keyVal.second;
+        //init predecessors[v] to an empty vector, in case the node has no successors
+        predecessors[node];
+        const vector<Key>& successors = KeyVal.second;
 
         for(const Key& v: successors)
           predecessors[v].push_back(node);

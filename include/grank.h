@@ -42,10 +42,10 @@ namespace ppr
   double tolerance)//tolerance
   {
     //checking parameters
-    if(K <= 0){cout << "K must be positive" << endl; exit(EXIT_FAILURE);}
-    if(L <= 0){cout << "L must be positive" << endl; exit(EXIT_FAILURE);}
+    if(K == 0){cout << "K must be positive" << endl; exit(EXIT_FAILURE);}
+    if(L == 0){cout << "L must be positive" << endl; exit(EXIT_FAILURE);}
     if(K > L){cout << "K must be <= L" << endl; exit(EXIT_FAILURE);}
-    if(iterations <= 0){cout << "iterations must be positive" << endl; exit(EXIT_FAILURE);}
+    if(iterations == 0){cout << "iterations must be positive" << endl; exit(EXIT_FAILURE);}
     if(damping < 0 || damping > 1){cout << "damping must be [0,1]" << endl; exit(EXIT_FAILURE);}
     //note: no checks on tolerance to allow having no tolerance at all by setting
     //it to a negative number

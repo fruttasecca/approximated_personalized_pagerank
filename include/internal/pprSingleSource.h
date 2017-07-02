@@ -34,7 +34,7 @@ namespace ppr
       Key source)//source node for which ppr is going to be computed
       {
         //checking parameters
-        if(iterations <= 0){cerr << "iterations must be positive" << endl; exit(EXIT_FAILURE);}
+        if(iterations == 0){cerr << "iterations must be positive" << endl; exit(EXIT_FAILURE);}
         if(damping < 0 || damping > 1){cerr << "damping must be [0,1]" << endl; exit(EXIT_FAILURE);}
         if(graph.find(source) == graph.end()){cerr << "source node not part of the graph" << endl; exit(EXIT_FAILURE);}
         //note: no checks on tolerance to allow having no tolerance at all by setting

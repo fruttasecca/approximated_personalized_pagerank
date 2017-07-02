@@ -80,9 +80,13 @@ namespace ppr
     }
 
     pair<unordered_set<Key>, unordered_set<Key>> partitions = pprInternal::findPartitions<Key>(graph);
-    double maxDiff = tolerance;//max difference between old and new map between iterations
+    //max difference between old and new map between iterations, a variable for each
+    //partition is needed to avoid some edge cases where a very simple partitition (i.e. no edges etc.)
+    //might make the algorithm converge during the first iteration, before the
+    //other partition is considered
+    double maxDiff[2] = {tolerance, tolerance};
 
-    for(size_t i = 0; i < iterations && maxDiff >= tolerance; i++)
+    for(size_t i = 0; i < iterations && std::max(maxDiff[0], maxDiff[1]) >= tolerance; i++)
     {
       maxDiff = 0;
 
@@ -129,6 +133,9 @@ namespace ppr
 
       //swap scores (results from this iteration are the new current results)
       scores.swap(nextScores);
+
+      //swap diffs
+      std::swap(maxDiff[0], maxDiff[1]);
     }
 
     for(auto& keyVal: graph)

@@ -69,7 +69,7 @@ int main()
   unordered_map<int, vector<int>> graph = importGraph("gnutella30.csv");
   unordered_map<int, double> testing;
   auto begin = std::chrono::steady_clock::now();
-  //auto map = grank<int>(graph, 50, 100, 30, 0.85, 0.0001);
+  auto map = grank<int>(graph, 50, 100, 30, 0.85, 0.0001);
   int done = 0;
   for(const auto& keyVal: graph)
   {

@@ -88,7 +88,7 @@ namespace ppr
 
     for(size_t i = 0; i < iterations && std::max(maxDiff[0], maxDiff[1]) >= tolerance; i++)
     {
-      maxDiff = 0;
+      maxDiff[0] = 0;
 
       for(const Key& v: partitions.first)
       {
@@ -118,7 +118,7 @@ namespace ppr
 
         //check difference between new and old map for this now and eventually
         //updated the maxDiff
-        maxDiff = std::max(maxDiff, pprInternal::norm1(currentMap, scores[v]));
+        maxDiff[0] = std::max(maxDiff[0], pprInternal::norm1(currentMap, scores[v]));
 
         currentMap.swap(nextScores[v]);
       }

@@ -1,7 +1,9 @@
 #ifndef GRANK_H
 #define GRANK_H
 
+#include <iostream>
 #include <unordered_set>
+#include <unordered_map>
 #include <vector>
 #include <stdlib.h>//exit
 #include <utility>//make pair
@@ -16,6 +18,7 @@ using std::make_pair;
 using std::max;
 using std::swap;
 using std::queue;
+using std::pair;
 
 
 namespace ppr

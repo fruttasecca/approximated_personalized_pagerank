@@ -42,6 +42,7 @@ endif()
 include_directories(googletest-src/googletest/include/gtest)
 add_executable(pprTest test/internal/jaccardTest.cc test/internal/keepTopTest.cc test/internal/norm1Test.cc test/internal/findPartitionsTest.cc 
 test/internal/pprSingleSourceTest.cc test/grankTest.cc test/benchmarkAlgorithmTest.cc
+test/grankHeaderOnlyTest.cc
 ${HEADER_FILES} ${INTERNAL_HEADER_FILES})
 target_link_libraries(pprTest gtest gtest_main)
 add_test(pprTest pprTest)

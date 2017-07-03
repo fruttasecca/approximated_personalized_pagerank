@@ -8,32 +8,46 @@
 #include <chrono>
 
 #include <kendall.h>
-#include <grank.h>
+#include <../header-only/grank.h>
 #include <pprSingleSource.h>
+#include <benchmarkAlgorithm.h>
 
 using namespace std;
 using ppr::grank;
 using ppr::pprInternal::pprSingleSource;
+using ppr::benchmarkAlgorithm;
 
-template<class Key>
-void printMap(unordered_map<Key, unordered_map<Key, double>> map)
+
+/**
+ * Imports a direct graph from a csv, every line is an edge in the form of:
+ * node1, node2
+ */
+unordered_map<int, vector<int>> importGraph(string fname);
+
+int main()
 {
-  for(auto vk1: map)
-  {
-    cout << vk1.first << " ppr: " << endl;
-    for(auto vk2: map[vk1.first])
-    {
-      cout << "\t" << vk2.first  << ":\t" << vk2.second << endl;
-    }
-  }
+  unordered_map<int, vector<int>> graph = importGraph("example.txt");
+
+  auto begin = std::chrono::steady_clock::now();
+  auto map = grank<int>(graph, 50, 100, 30, 0.85, 0.0001);
+  auto end= std::chrono::steady_clock::now();
+  std::cout << "grank run-time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " ms" << endl;
+
+  auto bench = benchmarkAlgorithm(map, graph, 100, true);
+  cout << "-------" << endl;
+  for(auto& keyVal: bench)
+    cout << keyVal.first << "     " << keyVal.second << endl;
+  cout << "-------" << endl;
+
+  return 0;
 }
 
-//checkare per lati ripetuti
 unordered_map<int, vector<int>> importGraph(string fname)
 {
   size_t edgeCounter = 0;
   ifstream inputFile(fname, ifstream::in);
   unordered_map<int, vector<int>> graph;
+
   //needed for repeating edges
   unordered_map<int, unordered_map<int, bool>> edges;
 
@@ -61,19 +75,4 @@ unordered_map<int, vector<int>> importGraph(string fname)
   cout << "nodes: " << graph.size() << " edges: " << edgeCounter << endl;
 
   return graph;
-}
-
-
-int main()
-{
-  unordered_map<int, vector<int>> graph = importGraph("gnutella30.csv");
-  unordered_map<int, double> testing;
-  
-  auto begin = std::chrono::steady_clock::now();
-  auto map = grank<int>(graph, 50, 100, 30, 0.85, 0.0001);
-  auto end= std::chrono::steady_clock::now();
-  std::cout << "done grank = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() <<std::endl;
-
-
-  return 0;
 }

@@ -1,6 +1,8 @@
 # Personalized Pagerank approximation algorithms
 
 Two c++11 Personalized Pagerank approximation algorithms, which was the subject of my thesis.
+In the directory header-only you can find their header-only implementation, so that you can just copy the
+header and use it in your projects.
 
 ## Prerequisites
 
@@ -77,4 +79,8 @@ As the name suggests this is going to compile the tests. Once compiled
 simply run them as "./pprTest".
 There are no tests for the implementation of the kendall algorithm because i took the header-only
 implementation from another repository of mine, named kendall (which is where the kendall tests are).
+
+## Header-only
+In the directory "header-only" you can find header-only implementations of the algorithms.
+If you are interested in reading the algorithms it's better to read the non header only versions from "include".
 

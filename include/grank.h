@@ -14,6 +14,12 @@ using std::unordered_set;
 using std::vector;
 using std::cerr; using std::endl;
 using std::make_pair;
+using std::max;
+using std::swap;
+
+using ppr::pprInternal::keepTop;
+using ppr::pprInternal::norm1;
+using ppr::pprInternal::findPartitions;
 
 
 namespace ppr
@@ -76,17 +82,17 @@ namespace ppr
       for(const Key& successor: successors)
         scores[v][successor] += factor;
 
-      pprInternal::keepTop(L, scores[v]);
+      keepTop(L, scores[v]);
     }
 
-    pair<unordered_set<Key>, unordered_set<Key>> partitions = pprInternal::findPartitions<Key>(graph);
+    pair<unordered_set<Key>, unordered_set<Key>> partitions = findPartitions<Key>(graph);
     //max difference between old and new map between iterations, a variable for each
     //partition is needed to avoid some edge cases where a very simple partitition (i.e. no edges etc.)
     //might make the algorithm converge during the first iteration, before the
     //other partition is considered
     double maxDiff[2] = {tolerance, tolerance};
 
-    for(size_t i = 0; i < iterations && std::max(maxDiff[0], maxDiff[1]) >= tolerance; i++)
+    for(size_t i = 0; i < iterations && max(maxDiff[0], maxDiff[1]) >= tolerance; i++)
     {
       maxDiff[0] = 0;
 
@@ -114,11 +120,11 @@ namespace ppr
         }
 
         //keep the top L values only
-        pprInternal::keepTop(L, currentMap);
+        keepTop(L, currentMap);
 
         //check difference between new and old map for this now and eventually
         //updated the maxDiff
-        maxDiff[0] = std::max(maxDiff[0], pprInternal::norm1(currentMap, scores[v]));
+        maxDiff[0] = max(maxDiff[0], norm1(currentMap, scores[v]));
 
         currentMap.swap(nextScores[v]);
       }
@@ -128,18 +134,19 @@ namespace ppr
 
       //carry on results for the partition that wasn't elaborated
       //during this iteration to the next iteration
-      for(Key v: partitions.first)
+      for(const Key& v: partitions.first)
         nextScores[v].swap(scores[v]);
 
       //swap scores (results from this iteration are the new current results)
       scores.swap(nextScores);
 
       //swap diffs
-      std::swap(maxDiff[0], maxDiff[1]);
+      swap(maxDiff[0], maxDiff[1]);
     }
 
-    for(auto& keyVal: graph)
-      pprInternal::keepTop(K, scores[keyVal.first]);
+    for(auto& keyVal: scores)
+      keepTop(K, keyVal.second);
+
     return scores;
   }
 }

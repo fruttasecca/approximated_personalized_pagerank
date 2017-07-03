@@ -68,17 +68,11 @@ int main()
 {
   unordered_map<int, vector<int>> graph = importGraph("gnutella30.csv");
   unordered_map<int, double> testing;
+  
   auto begin = std::chrono::steady_clock::now();
   auto map = grank<int>(graph, 50, 100, 30, 0.85, 0.0001);
-  int done = 0;
-  for(const auto& keyVal: graph)
-  {
-    pprSingleSource(graph, 30, 0.85, 0.0001, keyVal.first);
-    done++;
-  }
-  cout << done << endl;
   auto end= std::chrono::steady_clock::now();
-  std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() <<std::endl;
+  std::cout << "done grank = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() <<std::endl;
 
 
   return 0;

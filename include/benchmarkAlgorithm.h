@@ -20,6 +20,7 @@ using std::unordered_map;
 using std::unordered_set;
 using std::vector;
 using std::cerr; using std::endl;
+using std::min;
 
 namespace ppr
 {
@@ -82,7 +83,7 @@ namespace ppr
     double kendallAverage = 0;
     double kendallMin = 1.0;
     double averageMapSize = 0;
-    for(size_t i = 0, iEnd = std::min(nodes.size(), testNodes); i < iEnd; i++)
+    for(size_t i = 0, iEnd = min(nodes.size(), testNodes); i < iEnd; i++)
       {
         const Key& node = nodes[i];
         const unordered_map<Key, double>& otherAlgo = ppr.find(node)->second;
@@ -129,7 +130,7 @@ namespace ppr
         averageMapSize += otherAlgo.size();
       }
 
-    if(testedNodes)
+    if(min(nodes.size(), testNodes))
     {
       jaccardAverage /= std::min(nodes.size(), testNodes);
       kendallAverage /= std::min(nodes.size(), testNodes);

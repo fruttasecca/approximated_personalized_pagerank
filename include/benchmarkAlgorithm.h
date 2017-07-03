@@ -19,7 +19,7 @@ using std::string;
 using std::unordered_map;
 using std::unordered_set;
 using std::vector;
-using std::cout; using std::endl;
+using std::cerr; using std::endl;
 
 namespace ppr
 {
@@ -43,11 +43,15 @@ namespace ppr
    * number of reached nodes (and thus the map containing the scoring nodes) lower
    * than intended (i.e. having a K = 50 but max iterations set to 2 might lead
    * to an average map size of less than 50).
+   * If the sampled nodes amount to 0
+   * because of the "strict" parameter, or for any other reason, all values in the
+   * returned map are set to -1.
    */
   template<typename Key>
   unordered_map<string, double> benchmarkAlgorithm(const unordered_map<Key, unordered_map<Key, double>>& ppr,
     const unordered_map<Key, vector<Key>>& graph, size_t testNodes, bool strict)
   {
+    if(testNodes == 0) {cerr << "testNodes must be positive" << endl; exit(EXIT_FAILURE);}
     unordered_map<string, double> result;
 
     // shuffle nodes to benchmark the algorithm on a number of random nodes equal to
@@ -59,7 +63,7 @@ namespace ppr
     {
       if(graph.find(keyVal.first) == graph.cend())
       {
-        cout << "node " << keyVal.first << " in the provided map is not part of the provided graph" << endl;
+        cerr << "node " << keyVal.first << " in the provided map is not part of the provided graph" << endl;
         exit(EXIT_FAILURE);
       }
 
@@ -125,14 +129,25 @@ namespace ppr
         averageMapSize += otherAlgo.size();
       }
 
-    jaccardAverage /= std::min(nodes.size(), testNodes);
-    kendallAverage /= std::min(nodes.size(), testNodes);
-    averageMapSize /= std::min(nodes.size(), testNodes);
-    result["jaccard average"] = jaccardAverage;
-    result["jaccard min"] = jaccardMin;
-    result["kendall average"] = kendallAverage;
-    result["kendall min"] = kendallMin;
-    result["average map size"] = averageMapSize;
+    if(testedNodes)
+    {
+      jaccardAverage /= std::min(nodes.size(), testNodes);
+      kendallAverage /= std::min(nodes.size(), testNodes);
+      averageMapSize /= std::min(nodes.size(), testNodes);
+      result["jaccard average"] = jaccardAverage;
+      result["jaccard min"] = jaccardMin;
+      result["kendall average"] = kendallAverage;
+      result["kendall min"] = kendallMin;
+      result["average map size"] = averageMapSize;
+    }
+    else
+    {
+      result["jaccard average"] = -1;
+      result["jaccard min"] = -1;
+      result["kendall average"] = -1;
+      result["kendall min"] = -1;
+      result["average map size"] = -1;
+    }
     return result;
   }
 }

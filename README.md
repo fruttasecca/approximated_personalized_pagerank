@@ -75,4 +75,6 @@ make tests
 ```
 As the name suggests this is going to compile the tests. Once compiled
 simply run them as "./pprTest".
+There are no tests for the implementation of the kendall algorithm because i took the header-only
+implementation from another repository of mine, named kendall (which is where the kendall tests are).
 

@@ -23,6 +23,51 @@ using std::pair;
 
 namespace ppr
 {
+  /**
+   * Approximated Personalized Pagerank for all nodes in the graph. The graph
+   * is an unordered_map where each key is a node, and is mapped to a vector of
+   * nodes for which an edge exists between the key node and the nodes in the vector.
+   * Nodes which have no edges must still be part of the map, and are mapped to an
+   * empty vector.
+   * @param graph      Graph for which to calculate ppr for all sources.
+   * @param K          Number of entries (nodes) for each source, the ppr top-K scoring nodes for the source node.
+   * @param L          Number of entries (nodes) for each source to store during computation.
+   * @param iterations Max number of iterations of the algorithm (it might be stopped by the tolerance).
+   * @param damping    Damping factor, a la Pagerank.
+   * @param tolerance  Stopping tolerance based on the norm-1 between old and new top-L, a negative
+   * tolerance can be used to have no tolerance at all, making it so that the
+   * algorithm stops only once the max number of iterations are done.
+   * @return Map of maps of each source node, mapping the node to a basket of top-K highest scoring
+   * nodes.
+   */
+  template<typename Key>
+  unordered_map<Key, unordered_map<Key, double>> grank(const unordered_map<Key, vector<Key>>& graph, //the graph
+  size_t K,//small top, K <= L
+  size_t L,//large top
+  size_t iterations,//max number of iterations
+  double damping,//damping factor
+  double tolerance);//tolerance
+
+
+  /*****************************************************************************
+  The definition of grank starts at around line 217 in this file, but you should
+  probably read the algorithm from the more readable file "include/grank.h"
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  *****************************************************************************/
+
   namespace grankInternal
   {
     /**
@@ -168,22 +213,7 @@ namespace ppr
       return res;
     }
 }
-  /**
-   * Approximated Personalized Pagerank for all nodes in the graph. The graph
-   * is an unordered_map where each key is a node, and is mapped to a vector of
-   * nodes for which an edge exists between the key node and the nodes in the vector.
-   * Nodes which have no edges must still be part of the map, and are mapped to an
-   * empty vector.
-   * @param graph      Graph for which to calculate ppr for all sources.
-   * @param K          Number of entries (nodes) for each source, the ppr top-K scoring nodes for the source node.
-   * @param L          Number of entries (nodes) for each source to store during computation.
-   * @param iterations Max number of iterations of the algorithm (it might be stopped by the tolerance).
-   * @param damping    Damping factor, a la Pagerank.
-   * @param tolerance  Stopping tolerance based on the norm-1 between old and new top-L, a negative
-   * tolerance can be used to have no tolerance at all, making it so that the
-   * algorithm stops only once the max number of iterations are done.
-   * @return maps of each node.
-   */
+
   template<typename Key>
   unordered_map<Key, unordered_map<Key, double>> grank(const unordered_map<Key, vector<Key>>& graph, //the graph
   size_t K,//small top, K <= L

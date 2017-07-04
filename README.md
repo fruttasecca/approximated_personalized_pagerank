@@ -17,11 +17,9 @@ cmake CMakeLists.txt
 
 This will configure your make file and clone gtest in your project directory from their repo.
 
-```
-make
-```
 After having your make file ready you can use "make" to compile the project into a binary
-file named "ppr", it's a simple example of getting a graph from a csv file, approximating ppr with one of the algorithms and sampling some nodes to have a general idea of the goodness of the approximation.
+file named "ppr", it's a simple example of getting a graph from a csv file, approximating ppr 
+with one of the algorithms and sampling some nodes to have a general idea of the goodness of the approximation.
 
 ## Usage
 
@@ -83,4 +81,12 @@ implementation from another repository of mine, named kendall (which is where th
 ## Header-only
 In the directory "header-only" you can find header-only implementations of the algorithms.
 If you are interested in reading the algorithms it's better to read the non header only versions from "include".
+
+## Disclaimer
+Despite these functions being templates, and allowing basically anything as a Key, mind that Keys are going to be
+copied during the call of the functions, this obviously happens at least once, since the returned unordered_map 
+contains Keys, and not wrapped references.
+For this reason it is best to use primitive or extremely simple types as Keys.
+I have decided to not use wrapped references because it would make the implementation more complex without
+actually having real use cases.
 

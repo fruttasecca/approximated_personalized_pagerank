@@ -67,7 +67,7 @@ namespace ppr
     for(const auto& keyVal: graph)
     {
       //retrieve key value (the vertex) from each key-value pair
-      Key v = keyVal.first;
+      const Key& v = keyVal.first;
 
       //get successors of node
       const vector<Key>& successors = graph.find(v)->second;

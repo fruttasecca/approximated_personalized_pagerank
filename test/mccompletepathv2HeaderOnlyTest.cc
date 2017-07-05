@@ -6,7 +6,7 @@
 
 #include <gtest.h>
 #include <gtest-spi.h>
-#include <mccompletepathv2.h>
+#include <../header-only/mccompletepathv2.h>
 #include <pprSingleSource.h>
 
 using namespace std;
@@ -17,7 +17,7 @@ extern random_device rd;
 extern default_random_engine eng;
 extern uniform_int_distribution<unsigned long long> dis;
 
-TEST(mccompletepathv2, badParameters)
+TEST(mccompletepathv2HeaderOnly, badParameters)
 {
   unordered_map<int, vector<int>> graph;
   ASSERT_EXIT(mccompletepathv2(graph, 0, 3, 42, 0.5), ::testing::ExitedWithCode(EXIT_FAILURE), "K must be positive");
@@ -28,14 +28,14 @@ TEST(mccompletepathv2, badParameters)
   ASSERT_EXIT(mccompletepathv2(graph, 2, 2, 10, -1.5), ::testing::ExitedWithCode(EXIT_FAILURE), "damping must be \\[0,1]");
 }
 
-TEST(mccompletepathv2, emptyGraph)
+TEST(mccompletepathv2HeaderOnly, emptyGraph)
 {
   unordered_map<int, vector<int>> graph;
   auto res =  mccompletepathv2(graph, 10, 30, 100, 0.85);
   ASSERT_EQ(res.size(), 0);
 }
 
-TEST(mccompletepathv2, testNoEdges)
+TEST(mccompletepathv2HeaderOnly, testNoEdges)
 {
   unordered_map<int, vector<int>> graph;
   for(int i = 0; i < 10; i++)
@@ -49,7 +49,7 @@ TEST(mccompletepathv2, testNoEdges)
   }
 }
 
-TEST(mccompletepathv2, testTopL)
+TEST(mccompletepathv2HeaderOnly, testTopL)
 {
   unordered_map<int, vector<int>> graph;
   //adds 30 nodes and <= 30 random edges, then checks if the returned top
@@ -67,7 +67,7 @@ TEST(mccompletepathv2, testTopL)
   }
 }
 
-TEST(mccompletepathv2, singleNode)
+TEST(mccompletepathv2HeaderOnly, singleNode)
 {
   unordered_map<int, vector<int>> graph;
   graph[0];
@@ -83,7 +83,7 @@ TEST(mccompletepathv2, singleNode)
   ASSERT_GE(res[0][0], 1.0);
 }
 
-TEST(mccompletepathv2, twoNodes)
+TEST(mccompletepathv2HeaderOnly, twoNodes)
 {
   unordered_map<int, vector<int>> graph;
   graph[0];graph[1];
@@ -104,7 +104,7 @@ TEST(mccompletepathv2, twoNodes)
   ASSERT_GE(res[1][1], res[1][0]);
 }
 
-TEST(mccompletepathv2, lineGraph)
+TEST(mccompletepathv2HeaderOnly, lineGraph)
 {
   unordered_map<int, vector<int>> graph;
   for(int i = 0; i < 6; i++)
@@ -151,7 +151,7 @@ TEST(mccompletepathv2, lineGraph)
   }
 }
 
-TEST(mccompletepathv2, starGraph)
+TEST(mccompletepathv2HeaderOnly, starGraph)
 {
   unordered_map<int, vector<int>> graph;
   for(int i = 0; i < 6; i++)
@@ -173,7 +173,7 @@ TEST(mccompletepathv2, starGraph)
 
   //connect the center to itself
   graph[0].push_back(0);
-  res =  mccompletepathv2(graph, 10, 30, 1000, 0.85);
+  res =  mccompletepathv2(graph, 10, 30, 100, 0.85);
   for(int i = 1; i < 6; i++)
   {
     ASSERT_EQ(res[i].size(), 2);
@@ -181,7 +181,7 @@ TEST(mccompletepathv2, starGraph)
   }
 }
 
-TEST(mccompletepathv2, starGraphReversed)
+TEST(mccompletepathv2HeaderOnly, starGraphReversed)
 {
   unordered_map<int, vector<int>> graph;
   for(int i = 0; i < 6; i++)
@@ -206,7 +206,7 @@ TEST(mccompletepathv2, starGraphReversed)
 
   for(int i = 1; i < 6; i++)
     graph[i].push_back(i);
-  res =  mccompletepathv2(graph, 10, 30, 100, 0.85);
+  res =  mccompletepathv2(graph, 10, 30, 1000, 0.85);
   ASSERT_EQ(res.size(), graph.size());
   ASSERT_EQ(res[0].size(), graph.size());
   ASSERT_NEAR(res[0][0], 1.0, 10e-5);
@@ -218,7 +218,7 @@ TEST(mccompletepathv2, starGraphReversed)
   }
 }
 
-TEST(mccompletepathv2, testNodesGreaterThanK)
+TEST(mccompletepathv2HeaderOnly, testNodesGreaterThanK)
 {
   const size_t K = 10;
   unordered_map<int, vector<int>> graph;
@@ -271,7 +271,7 @@ TEST(mccompletepathv2, testNodesGreaterThanK)
 
 }
 
-TEST(mccompletepathv2, testNodesEqualK)
+TEST(mccompletepathv2HeaderOnly, testNodesEqualK)
 {
   unordered_map<int, vector<int>> graph;
   for(int i = 0; i < 100; i++)
@@ -294,7 +294,7 @@ TEST(mccompletepathv2, testNodesEqualK)
   }
 }
 
-TEST(mccompletepathv2, testNodesLowerThanK)
+TEST(mccompletepathv2HeaderOnly, testNodesLowerThanK)
 {
   unordered_map<int, vector<int>> graph;
   for(int i = 0; i < 100; i++)

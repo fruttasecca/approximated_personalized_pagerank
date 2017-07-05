@@ -194,7 +194,7 @@ namespace ppr
   {
     //checking parameters
     if(K == 0){cerr << "K must be positive" << endl; exit(EXIT_FAILURE);}
-    if(L == 0){cerr << "K must be positive" << endl; exit(EXIT_FAILURE);}
+    if(L == 0){cerr << "L must be positive" << endl; exit(EXIT_FAILURE);}
     if(K > L){cerr << "K must be <= L" << endl; exit(EXIT_FAILURE);}
     if(iterations == 0){cerr << "iterations must be positive" << endl; exit(EXIT_FAILURE);}
     if(damping < 0 || damping > 1){cerr << "damping must be [0,1]" << endl; exit(EXIT_FAILURE);}

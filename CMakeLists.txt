@@ -45,6 +45,7 @@ test/internal/pprSingleSourceTest.cc test/grankTest.cc test/benchmarkAlgorithmTe
 test/grankHeaderOnlyTest.cc
 test/mccompletepathv2Test.cc
 test/mccompletepathv2HeaderOnlyTest.cc
+test/grankMultiThreadTest.cc
 ${HEADER_FILES} ${INTERNAL_HEADER_FILES})
 target_link_libraries(pprTest gtest gtest_main)
 add_test(pprTest pprTest)

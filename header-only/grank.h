@@ -1,5 +1,5 @@
-#ifndef GRANK_H
-#define GRANK_H
+#ifndef GRANKHEADER_H
+#define GRANKHEADER_H
 
 #include <iostream>
 #include <unordered_set>

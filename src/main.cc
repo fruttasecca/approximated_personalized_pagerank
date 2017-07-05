@@ -9,12 +9,14 @@
 
 #include <kendall.h>
 #include <grank.h>
+#include <grankMulti.h>
 #include <mccompletepathv2.h>
 #include <pprSingleSource.h>
 #include <benchmarkAlgorithm.h>
 
 using namespace std;
 using ppr::grank;
+using ppr::grankMulti;
 using ppr::mccompletepathv2;
 using ppr::pprInternal::pprSingleSource;
 using ppr::benchmarkAlgorithm;
@@ -29,19 +31,50 @@ unordered_map<string, vector<string>> importGraph2(string fname);
 
 int main()
 {
-  unordered_map<int, vector<int>> graph = importGraph("example.txt");
-  //unordered_map<string, vector<string>> graph = importGraph2("example.txt");
+  unordered_map<int, vector<int>> graph = importGraph("gnutella30.csv");
+  //unordered_map<string, vector<string>> graph = importGraph2("gnutella30.csv");
 
-  auto begin = std::chrono::steady_clock::now();
-  auto map = grank(graph, 50, 100, 30, 0.85, 0.0001);
-  auto end= std::chrono::steady_clock::now();
-  std::cout << "grank run-time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " ms" << endl;
+  //grank multi
+  {
+    auto begin = std::chrono::steady_clock::now();
+    auto map = grankMulti(graph, 50, 100, 30, 0.85, 0.0001, 4);
+    auto end= std::chrono::steady_clock::now();
+    std::cout << "grank run-time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " ms" << endl;
 
-  auto bench = benchmarkAlgorithm(map, graph, 100, true);
-  cout << "-------" << endl;
-  for(auto& keyVal: bench)
-    cout << keyVal.first << "     " << keyVal.second << endl;
-  cout << "-------" << endl;
+    auto bench = benchmarkAlgorithm(map, graph, 200, true);
+    cout << "-------" << endl;
+    for(auto& keyVal: bench)
+      cout << keyVal.first << "     " << keyVal.second << endl;
+    cout << "-------" << endl;
+  }
+
+  //grank
+  {
+    auto begin = std::chrono::steady_clock::now();
+    auto map = grank(graph, 50, 100, 30, 0.85, 0.0001);
+    auto end= std::chrono::steady_clock::now();
+    std::cout << "grank run-time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " ms" << endl;
+
+    auto bench = benchmarkAlgorithm(map, graph, 200, true);
+    cout << "-------" << endl;
+    for(auto& keyVal: bench)
+      cout << keyVal.first << "     " << keyVal.second << endl;
+    cout << "-------" << endl;
+  }
+
+  //mc
+  {
+    auto begin2 = std::chrono::steady_clock::now();
+    auto map2 = mccompletepathv2<int>(graph, 50, 200, 1000, 0.85);
+    auto end2 = std::chrono::steady_clock::now();
+    std::cout << "mc run-time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end2 - begin2).count() << " ms" << endl;
+
+    auto bench2 = benchmarkAlgorithm(map2, graph, 200, true);
+    cout << "-------" << endl;
+    for(auto& keyVal: bench2)
+      cout << keyVal.first << "     " << keyVal.second << endl;
+    cout << "-------" << endl;
+  }
 
   return 0;
 }

@@ -213,7 +213,7 @@ namespace ppr
     for(const auto& keyVal: graph)
       index[keyVal.first];
 
-    vector<Key> order = executionOrder(graph);
+    vector<Key> order = pprInternal::executionOrder(graph);
 
     for(const Key& node: order)
     {

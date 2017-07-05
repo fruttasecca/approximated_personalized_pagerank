@@ -38,7 +38,7 @@ namespace ppr
    * @param tolerance  Stopping tolerance based on the norm-1 between old and new top-L, a negative
    * tolerance can be used to have no tolerance at all, making it so that the
    * algorithm stops only once the max number of iterations are done.
-   * @return maps of each node.
+   * @return Maps of each node, storing theirs personalized pagerank top-K basket.
    */
   template<typename Key>
   unordered_map<Key, unordered_map<Key, double>> grank(const unordered_map<Key, vector<Key>>& graph, //the graph

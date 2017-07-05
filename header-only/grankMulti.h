@@ -184,7 +184,7 @@ size_t nThreads)//number of threads, at least 1
     {
       auto begin = partitionsV.first.begin() + (chunk * t);
       auto end = partitionsV.first.begin() + (chunk * (t + 1));
-      cout << chunk * t <<  " - " << ((t == nThreads - 1)? partitionsV.first.size() :chunk * (t + 1)) << endl;
+      //cout << chunk * t <<  " - " << ((t == nThreads - 1)? partitionsV.first.size() :chunk * (t + 1)) << endl;
       if(t == nThreads - 1)
         end = partitionsV.first.end();
 

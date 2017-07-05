@@ -9,7 +9,7 @@
 
 #include <kendall.h>
 #include <grank.h>
-#include <grankMulti.h>
+#include <../header-only/grankMulti.h>
 #include <mccompletepathv2.h>
 #include <pprSingleSource.h>
 #include <benchmarkAlgorithm.h>
@@ -31,7 +31,7 @@ unordered_map<string, vector<string>> importGraph2(string fname);
 
 int main()
 {
-  unordered_map<int, vector<int>> graph = importGraph("gnutella30.csv");
+  unordered_map<int, vector<int>> graph = importGraph("standford.csv");
   //unordered_map<string, vector<string>> graph = importGraph2("gnutella30.csv");
 
   //grank multi
@@ -40,7 +40,6 @@ int main()
     auto map = grankMulti(graph, 50, 100, 30, 0.85, 0.0001, 4);
     auto end= std::chrono::steady_clock::now();
     std::cout << "grank run-time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " ms" << endl;
-
     auto bench = benchmarkAlgorithm(map, graph, 200, true);
     cout << "-------" << endl;
     for(auto& keyVal: bench)
@@ -75,7 +74,7 @@ int main()
       cout << keyVal.first << "     " << keyVal.second << endl;
     cout << "-------" << endl;
   }
-
+  //*/
   return 0;
 }
 

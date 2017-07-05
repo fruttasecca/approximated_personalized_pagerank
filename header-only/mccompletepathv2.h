@@ -1,18 +1,21 @@
-#ifndef MCCOMPLETEPATHV2_H
-#define MCCOMPLETEPATHV2_H
+#ifndef MCCOMPLETEPATHV2HEADER_H
+#define MCCOMPLETEPATHV2HEADER_H
 
 #include <unordered_set>
+#include <unordered_map>
+#include <queue>
+#include <iostream>
 #include <vector>
 #include <stdlib.h>//exit
 #include <utility>//make pair
 #include <algorithm>//max
 #include <random>
 
-#include <pprInternal.h>
 
 using std::unordered_map;
 using std::unordered_set;
 using std::vector;
+using std::queue;
 using std::cerr; using std::endl;
 using std::make_pair;
 using std::move;
@@ -20,17 +23,55 @@ using std::max;
 using std::swap;
 using std::tuple;
 using std::get;
+using std::pair;
 
-using ppr::pprInternal::keepTop;
-using ppr::pprInternal::norm1;
-using ppr::pprInternal::findPartitions;
 
 namespace ppr
 {
-  namespace pprInternal
+  /**
+   * Approximated Personalized Pagerank for all nodes in the graph. The graph
+   * is an unordered_map where each key is a node, and is mapped to a vector of
+   * nodes for which an edge exists between the key node and the nodes in the vector.
+   * Nodes which have no edges must still be part of the map, and are mapped to an
+   * empty vector.
+   * @param graph      Graph for which to calculate ppr for all sources.
+   * @param K          Number of entries (nodes) for each source, the ppr top-K scoring nodes for the source node.
+   * @param L          Number of entries (nodes) for each source to store during computation.
+   * @param iterations Number of random walks to do for each node in the worst case.
+   * @param damping    Damping factor, a la Pagerank.
+   * @return Maps of each node, storing theirs personalized pagerank top-K basket.
+   */
+  template<typename Key>
+  unordered_map<Key, unordered_map<Key, double>> mccompletepathv2(const unordered_map<Key, vector<Key>>& graph, //the graph
+  size_t K,//small top
+  size_t L,//large top
+  size_t iterations,//number of monte carlo random walks for each node in the worst case
+  double damping);//damping factor
+
+
+  /*****************************************************************************
+  The definition of mccompletepathv2 starts at around line 266 in this file, but you should
+  probably read the algorithm from the more readable file "include/mccompletepathv2.h"
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  ******************************************************************************
+  *****************************************************************************/
+
+  namespace mccompletepathv2Internal
   {
     std::random_device pprDevice;
-    std::mt19937 pprGenerator(pprInternal::pprDevice());
+    std::mt19937 pprGenerator(ppr::mccompletepathv2Internal::pprDevice());
     std::uniform_real_distribution<double> pprDis(0.0, 1.0);
 
     template<typename Key>
@@ -158,7 +199,7 @@ namespace ppr
               if(res.find(*currentNode) != res.end() || res.size() < K)
                 res[*currentNode]++;
             }
-          }while(pprInternal::pprDis(pprInternal::pprGenerator) <= damping);
+          }while(mccompletepathv2Internal::pprDis(mccompletepathv2Internal::pprGenerator) <= damping);
 
         }
         //divide by the number of walks done to obtain the mean
@@ -169,8 +210,44 @@ namespace ppr
         res[node] = 1.0;
       return res;
     }
-  }
 
+    /**
+     * Keep the top-L scoring elements (key-val pairs), a pair scores better
+     * than another if it's value is greater than the value of the other.
+     * If L is greater than the size of the map the function call has no effect.
+     * @param L Number of elements to retain.
+     * @param m Unordered_map for which to keep the top-L elements.
+     */
+    template<typename Key>
+    inline void keepTop(size_t L, unordered_map<Key, double>& m)
+    {
+      if(m.size() > L)
+      {
+        //make vectors of pairs and partially sort it
+        vector<pair<Key, double>> data(m.cbegin(), m.cend());
+
+        std::nth_element(data.begin(), data.begin() + L, data.end(),
+          [](const pair<Key, double>& p1, const pair<Key, double>& p2)
+          { return p1.second > p2.second;});
+
+        //if elements to remove are less than L just remove them
+        if(m.size() - L < L)
+        {
+          for(auto it = data.cbegin() + L, end = data.cend(); it != end; it++)
+            m.erase(it->first);
+        }
+        else
+        {
+          //if there would be a lot of elements to erase just make another map
+          //and fill it, then swap contents
+          unordered_map<Key, double> newMap;
+          newMap.reserve(m.size());
+          newMap.insert(data.cbegin(), data.cbegin() + L);
+          newMap.swap(m);
+        }
+      }
+    }
+  }
 
   /**
    * Approximated Personalized Pagerank for all nodes in the graph. The graph
@@ -213,7 +290,7 @@ namespace ppr
     for(const auto& keyVal: graph)
       index[keyVal.first];
 
-    vector<Key> order = pprInternal::executionOrder(graph);
+    vector<Key> order = mccompletepathv2Internal::executionOrder(graph);
 
     for(const Key& node: order)
     {
@@ -242,13 +319,13 @@ namespace ppr
         will be simply "overwritten" by the final result.*/
         if(scores.find(successor) == scores.end())
         {
-          scores.insert(make_pair(successor, move(ppr::pprInternal::walkNode(graph,
+          scores.insert(make_pair(successor, move(ppr::mccompletepathv2Internal::walkNode(graph,
             index, successor, L, damping, iterations))));
         }
         for(const auto& keyVal: scores[successor])
           map[keyVal.first] += keyVal.second;
       }
-      keepTop(L, map);
+      ppr::mccompletepathv2Internal::keepTop(L, map);
 
       //multiply each value in the map for the factor
       for(auto& keyVal: map)
@@ -259,7 +336,7 @@ namespace ppr
 
     for(auto& keyVal: scores)
     {
-      keepTop(K, keyVal.second);
+      ppr::mccompletepathv2Internal::keepTop(K, keyVal.second);
       keyVal.second.reserve(K);
       keyVal.second.rehash(K);
     }

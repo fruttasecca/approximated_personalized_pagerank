@@ -7,6 +7,7 @@
 #include <utility>//make pair
 #include <algorithm>//max
 #include <thread>
+#include <chrono>
 
 #include <pprInternal.h>
 
@@ -107,37 +108,59 @@ size_t nThreads)//number of threads, at least 1
   //note: no checks on tolerance to allow having no tolerance at all by setting
   //it to a negative number
 
-  //allocate scores maps
-  unordered_map<Key, unordered_map<Key, double>> scores;
-  scores.reserve(graph.size());
-  unordered_map<Key, unordered_map<Key, double>> nextScores;
-  nextScores.reserve(graph.size());
+  //get a vector of all keys (used for multi threaded initialization and clean up
+  //of the maps, with clean up i mean the keepTop(K, map) at the end of this method
+  vector<Key> allKeys; allKeys.reserve(graph.size());
 
-  //init score for each vertex  in the graph
+  //allocate scores maps and init each map so that threads using scores and
+  //nextScores don't cause any change in scores and nextScores due to
+  //rehashing or whatever
+  unordered_map<Key, unordered_map<Key, double>> scores; scores.reserve(graph.size());
+  unordered_map<Key, unordered_map<Key, double>> nextScores; nextScores.reserve(graph.size());
   for(const auto& keyVal: graph)
   {
-    //retrieve key value (the vertex) from each key-value pair
-    const Key& v = keyVal.first;
-
-    //get successors of node
-    const vector<Key>& successors = graph.find(v)->second;
-    double factor = damping / successors.size();
-
-    //assign to itself a score of 1 - damping
-    //scores[v] retrieves the map of scores for source node v
-    //scores[v][v] is operating on the map of scores of source node v
-    scores[v][v] = 1.0 - damping;
-
-    //add score to each neighbour (needs += because a node might have an edge to itself)
-    for(const Key& successor: successors)
-      scores[v][successor] += factor;
-
-    keepTop(L, scores[v]);
-
-    //init nextScores aswell so that operator [] doesnt change the map
-    //when called from the threads
-    nextScores[v];
+    allKeys.push_back(keyVal.first);
+    scores[keyVal.first];
+    nextScores[keyVal.first];
   }
+
+  //multi threaded initialization
+  vector<thread> threads;
+  size_t chunk = allKeys.size()/nThreads;
+  for(size_t t = 0; t < nThreads; t++)
+  {
+    auto begin = allKeys.begin() + (chunk * t);
+    auto end = allKeys.begin() + (chunk * (t + 1));
+    if(t == nThreads - 1)
+      end = allKeys.end();
+
+    //threads.emplace([captured stuff](arguments){body of the lambda}, arguments ...}
+    threads.emplace_back([L, damping, &scores, &graph](typename vector<Key>::iterator begin, typename vector<Key>::iterator end)
+      {
+        for(auto it = begin; it != end; it++)
+        {
+          const Key& node = *it;
+
+          //get successors of node
+          const vector<Key>& successors = graph.find(node)->second;
+          double factor = damping / successors.size();
+
+          //assign to itself a score of 1 - damping
+          //scores[node] retrieves the map of scores for source node node
+          //scores[node][node] is operating on the map of scores of source node "node"
+          scores[node][node] = 1.0 - damping;
+
+          for(const Key& successor: successors)
+            scores[node][successor] += factor;
+
+          keepTop(L, scores[node]);
+        }
+      }
+      , begin, end);
+  }
+  for(auto& t: threads)
+    t.join();
+  threads.clear();
 
   pair<unordered_set<Key>, unordered_set<Key>> partitions = findPartitions<Key>(graph);
   pair<vector<Key>, vector<Key>> partitionsV(std::make_pair(vector<Key>(), vector<Key>()));
@@ -154,29 +177,26 @@ size_t nThreads)//number of threads, at least 1
   {
     maxDiff[0] = 0;
 
-    //start threads
-    vector<thread> threads;
+    //multi threaded combination of direct successors maps for every node
     vector<double> maxDiffs(nThreads, 0);//used for the maxDiff of every thread
     size_t chunk = partitionsV.first.size()/nThreads;
-    size_t beg = 0;
-    size_t end = chunk;
     for(size_t t = 0; t < nThreads; t++)
     {
-      cout << beg << " " << end << " on a partition of size: " << partitionsV.first.size() << endl;
+      auto begin = partitionsV.first.begin() + (chunk * t);
+      auto end = partitionsV.first.begin() + (chunk * (t + 1));
+      cout << chunk * t <<  " - " << ((t == nThreads - 1)? partitionsV.first.size() :chunk * (t + 1)) << endl;
+      if(t == nThreads - 1)
+        end = partitionsV.first.end();
+
       //threads.emplace(function, arguments...)
       threads.emplace_back(ppr::grankMultiInternal::combineMaps<Key, typename vector<Key>::iterator>,
-        partitionsV.first.begin() + beg, partitionsV.first.begin() + end, std::ref(graph),
+        begin, end, std::ref(graph),
         std::ref(scores), std::ref(nextScores), std::ref(maxDiffs[t]), L, damping);
-
-      beg += chunk;
-      end += chunk;
-      if(t == nThreads - 2)
-        end = partitionsV.first.size();
-      //end = begin + partitionsV.first.size()/nThreads;
     }
 
     for(auto& t: threads)
       t.join();
+    threads.clear();
 
     //swap partitions
     partitionsV.first.swap(partitionsV.second);
@@ -196,12 +216,27 @@ size_t nThreads)//number of threads, at least 1
     swap(maxDiff[0], maxDiff[1]);
   }
 
-  for(auto& keyVal: scores)
-    keepTop(K, keyVal.second);
+  //keep K top entries for all maps, multi threaded
+  for(size_t t = 0; t < nThreads; t++)
+  {
+    auto begin = allKeys.begin() + (chunk * t);
+    auto end = allKeys.begin() + (chunk * (t + 1));
+    if(t == nThreads - 1)
+      end = allKeys.end();
+
+    //threads.emplace([captured stuff](arguments){body of the lambda}, arguments ...}
+    threads.emplace_back([K, &scores](typename vector<Key>::iterator begin, typename vector<Key>::iterator end)
+      {
+        for(auto it = begin; it != end; it++)
+          keepTop(K, scores[(*it)]) ;
+      }
+      , begin, end);
+  }
+  for(auto& t: threads)
+    t.join();
 
   return scores;
 }
 
 }
-
 #endif

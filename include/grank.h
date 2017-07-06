@@ -1,26 +1,25 @@
 #ifndef GRANK_H
 #define GRANK_H
 
-#include <unordered_set>
-#include <vector>
-#include <stdlib.h>//exit
-#include <utility>//make pair
 #include <algorithm>//max
+#include <stdlib.h>//exit
+#include <unordered_set>
+#include <utility>//make pair
+#include <vector>
 
-#include <pprInternal.h>
+#include <internal/pprInternal.h>
 
-using std::unordered_map;
-using std::unordered_set;
-using std::vector;
 using std::cerr; using std::endl;
 using std::make_pair;
 using std::max;
 using std::swap;
+using std::unordered_map;
+using std::unordered_set;
+using std::vector;
 
+using ppr::pprInternal::findPartitions;
 using ppr::pprInternal::keepTop;
 using ppr::pprInternal::norm1;
-using ppr::pprInternal::findPartitions;
-
 
 namespace ppr
 {
@@ -58,10 +57,8 @@ namespace ppr
     //it to a negative number
 
     //allocate scores maps
-    unordered_map<Key, unordered_map<Key, double>> scores;
-    scores.reserve(graph.size());
-    unordered_map<Key, unordered_map<Key, double>> nextScores;
-    nextScores.reserve(graph.size());
+    unordered_map<Key, unordered_map<Key, double>> scores; scores.reserve(graph.size());
+    unordered_map<Key, unordered_map<Key, double>> nextScores; nextScores.reserve(graph.size());
 
     //init score for each vertex  in the graph
     for(const auto& keyVal: graph)
@@ -100,8 +97,7 @@ namespace ppr
       {
         //get nextScores map for current vertex, clear it and obtain results by combining
         //maps from the successors
-        unordered_map<Key, double> currentMap;
-        currentMap.reserve(nextScores[v].size());
+        unordered_map<Key, double> currentMap; currentMap.reserve(nextScores[v].size());
         currentMap.insert(make_pair(v, 1.0 - damping));
 
         //get successors
@@ -145,7 +141,10 @@ namespace ppr
     }
 
     for(auto& keyVal: scores)
+    {
       keepTop(K, keyVal.second);
+      keyVal.second.rehash(K);
+    }
 
     return scores;
   }

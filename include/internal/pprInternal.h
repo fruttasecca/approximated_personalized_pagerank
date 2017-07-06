@@ -2,19 +2,19 @@
 #define PPRINTERNAL_H
 
 #include <algorithm>//max
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include <utility>//make pair
+#include <iostream>
 #include <queue>
 #include <stdlib.h>//exit
-#include <iostream>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>//make pair
+#include <vector>
 
-using std::unordered_set;
-using std::unordered_map;
-using std::queue;
 using std::cout; using std::endl;
 using std::pair;
+using std::queue;
+using std::unordered_map;
+using std::unordered_set;
 using std::vector;
 
 namespace ppr

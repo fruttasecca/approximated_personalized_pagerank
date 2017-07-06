@@ -1,29 +1,29 @@
 #ifndef MCCOMPLETEPATHV2_H
 #define MCCOMPLETEPATHV2_H
 
-#include <unordered_set>
-#include <vector>
-#include <stdlib.h>//exit
-#include <utility>//make pair
 #include <algorithm>//max
 #include <random>
+#include <stdlib.h>//exit
+#include <unordered_set>
+#include <utility>//make pair
+#include <vector>
 
-#include <pprInternal.h>
+#include <internal/pprInternal.h>
 
+using std::cerr; using std::endl;
+using std::get;
+using std::make_pair;
+using std::max;
+using std::move;
+using std::swap;
+using std::tuple;
 using std::unordered_map;
 using std::unordered_set;
 using std::vector;
-using std::cerr; using std::endl;
-using std::make_pair;
-using std::move;
-using std::max;
-using std::swap;
-using std::tuple;
-using std::get;
 
+using ppr::pprInternal::findPartitions;
 using ppr::pprInternal::keepTop;
 using ppr::pprInternal::norm1;
-using ppr::pprInternal::findPartitions;
 
 namespace ppr
 {
@@ -37,8 +37,7 @@ namespace ppr
     vector<Key> executionOrder(const unordered_map<Key, vector<Key>>& graph)
     {
       //get list of predecessors for each node
-      unordered_map<Key, vector<Key>> predecessors;
-      predecessors.reserve(graph.size());
+      unordered_map<Key, vector<Key>> predecessors; predecessors.reserve(graph.size());
       for(const auto& keyVal: graph)
       {
         const Key& node = keyVal.first;
@@ -51,8 +50,7 @@ namespace ppr
       }
 
       //tuple<node, indegree, outdegree>
-      vector<tuple<Key, size_t, size_t>> data;
-      data.reserve(graph.size());
+      vector<tuple<Key, size_t, size_t>> data; data.reserve(graph.size());
       for(const auto& keyVal: graph)
         data.push_back(std::make_tuple(keyVal.first, predecessors[keyVal.first].size(), keyVal.second.size()));
 
@@ -63,26 +61,22 @@ namespace ppr
             (get<1>(t1) == get<1>(t2)? get<2>(t1) < get<2>(t2) : false);
         });
 
-      vector<Key> sorted;
-      sorted.reserve(data.size());
+      vector<Key> sorted; sorted.reserve(data.size());
       for(const auto& t: data)
         sorted.push_back(get<0>(t));
 
       //after sorting the nodes use a heuristic to get a more
       //efficient order
-      vector<Key> order;
-      order.reserve(data.size());
+      vector<Key> order; order.reserve(data.size());
       queue<Key> qu;
 
       //remaining successors to wait for
-      unordered_map<Key, size_t> waitFor;
-      waitFor.reserve(data.size());
+      unordered_map<Key, size_t> waitFor; waitFor.reserve(data.size());
       for(const auto& keyVal: graph)
         waitFor[keyVal.first] = keyVal.second.size();
 
       //keep track of visited nodes
-      unordered_set<Key> visited;
-      visited.reserve(data.size());
+      unordered_set<Key> visited; visited.reserve(data.size());
 
       for(const Key& node: sorted)
       {
@@ -202,13 +196,12 @@ namespace ppr
     //allocate  maps
     //there is no map storing the results from the random walks because "scores"
     //is used to store them while the node still doesn't have a final result
-    unordered_map<Key, unordered_map<Key, double>> scores;
-    scores.reserve(graph.size());
+    unordered_map<Key, unordered_map<Key, double>> scores; scores.reserve(graph.size());
 
     //each node has an index that tells which successor is going to be picked
     //next while moving away from the node during a random walk
-    unordered_map<Key, size_t> index;
-    index.reserve(graph.size());
+    unordered_map<Key, size_t> index; index.reserve(graph.size());
+
     //init the index of every node at 0
     for(const auto& keyVal: graph)
       index[keyVal.first];
@@ -217,8 +210,7 @@ namespace ppr
 
     for(const Key& node: order)
     {
-      unordered_map<Key, double> map;
-      map.reserve(L * graph.find(node)->second.size());
+      unordered_map<Key, double> map; map.reserve(L * graph.find(node)->second.size());
       double factor = (graph.find(node)->second.size() == 0) ? 1.0 : damping / graph.find(node)->second.size();
 
       /*
@@ -254,13 +246,12 @@ namespace ppr
       for(auto& keyVal: map)
         keyVal.second *= factor;
 
-      scores[node] = move(map);//checkare che nn copia
+      scores[node] = move(map);
     }
 
     for(auto& keyVal: scores)
     {
       keepTop(K, keyVal.second);
-      keyVal.second.reserve(K);
       keyVal.second.rehash(K);
     }
     return scores;

@@ -1,15 +1,15 @@
 #ifndef KENDALL_H
 #define KENDALL_H
 
-#include <vector>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
-using std::sqrt;
-using std::pair;
-using std::vector;
-using std::min;
 using std::make_pair;
+using std::min;
+using std::pair;
+using std::sqrt;
+using std::vector;
 
 /**
  * @brief Calculates the kendal correlation accounting for ties.
@@ -26,14 +26,14 @@ double kendallCorrelation(const vector<double>& x,const vector<double>& y)
   pairs.reserve(x.size());
   for(unsigned long long i = 0; i < x.size(); i++)
     pairs.emplace_back(make_pair(x[i], y[i]));
-  std::sort(pairs.begin(), pairs.end(), 
+  std::sort(pairs.begin(), pairs.end(),
       [](const pair<double, double>& p1, const pair<double, double>& p2)
       {
         //note: p1.second < p2.second instead of p1.second <= p2.second is used
         //because std::sort requires strict weak ordering
         return (p1.first == p2.first ? p1.second < p2.second : p1.first < p2.first);
       });
-  
+
 
   //pass the vector and count pairs having same X or same X and Y
   unsigned long long sameX = 0;//total pairs with same X
@@ -64,7 +64,7 @@ double kendallCorrelation(const vector<double>& x,const vector<double>& y)
     else
     {
       /*
-       * if the pairs have different X values update the sameX and 
+       * if the pairs have different X values update the sameX and
        * sameXY counters and reset the X and XY streaks to 1
        * */
       sameX += (consecutiveSameX * (consecutiveSameX - 1)) / 2;
@@ -91,17 +91,17 @@ double kendallCorrelation(const vector<double>& x,const vector<double>& y)
   */
   for(unsigned long chunk = 1; chunk < pairs.size(); chunk *= 2)
   {
-      //take 2 sorted chunks and make them one sorted chunk 
+      //take 2 sorted chunks and make them one sorted chunk
       for(unsigned long startChunk = 0; startChunk < pairs.size(); startChunk += 2 * chunk)
       {
           //start and end of the left half
           unsigned long startLeft = startChunk;
           unsigned long endLeft = min(startLeft + chunk, pairs.size());
-          
+
           //start and end of the right half
           unsigned long startRight = endLeft;
           unsigned long endRight = min(startRight + chunk, pairs.size());
-          
+
           //merge the 2 halfs
           //index is used to point to the right place in the holder array
           unsigned long index = startLeft;
@@ -128,7 +128,7 @@ double kendallCorrelation(const vector<double>& x,const vector<double>& y)
                   startLeft++;
               }
           }
-          
+
           /*
           if the left half is over there are no more discording pairs in this
           chunk, the remaining pairs in the right half can be copied
@@ -144,7 +144,7 @@ double kendallCorrelation(const vector<double>& x,const vector<double>& y)
       }
       pairs.swap(holder);
  }
-    
+
 
  //pass the vector and count pairs having same Y
  unsigned long long sameY = 0;//counter
@@ -158,21 +158,21 @@ double kendallCorrelation(const vector<double>& x,const vector<double>& y)
      sameY += (consecutiveSameY * (consecutiveSameY - 1ull)) / 2ull;
      consecutiveSameY = 1;
    }
- } 
+ }
  sameY += (consecutiveSameY * (consecutiveSameY - 1ull)) / 2ull;
 
  //return the correlation
  unsigned long long totalPairs = ((pairs.size() * (pairs.size() - 1ull)) / 2ull);
  /*
   * concordant pairs - discorant pairs, having the sameX or sameY count
-  * as a discording pair because the other value (Y or X) could be different, 
+  * as a discording pair because the other value (Y or X) could be different,
   * to account for the fact that pairs having the sameX might have the same Y
   * sameXY is added back, the rest of the discording pairs has been calculated
   * during the merge sort ( - discording)
   * */
  long long num = totalPairs - sameX - sameY + sameXY - 2ull * discording;
  /*
-  * squart root of 
+  * squart root of
   * (pairs not tied in X) * (pairs not tied in Y)
   * */
  long double den = sqrt((long double)(totalPairs - sameX) * (totalPairs - sameY));

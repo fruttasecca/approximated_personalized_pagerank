@@ -1,16 +1,15 @@
 #ifndef PPRSINGLESOURCE_H
 #define PPRSINGLESOURCE_H
 
-#include <unordered_map>
 #include <stdlib.h>//exit
+#include <unordered_map>
 
-#include <pprInternal.h>
-#include <pprSingleSource.h>
+#include <internal/pprInternal.h>
 
-using std::unordered_set;
-using std::unordered_map;
-using std::queue;
 using std::cout; using std::endl; using std::cerr;
+using std::queue;
+using std::unordered_map;
+using std::unordered_set;
 
 namespace ppr
 {

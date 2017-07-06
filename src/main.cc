@@ -1,38 +1,35 @@
-#include <iostream>
-#include <unordered_map>
-#include <functional>
 #include <algorithm>
-#include <string>
-#include <fstream>
-#include <sstream>
 #include <chrono>
+#include <fstream>
+#include <functional>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <unordered_map>
 
-#include <kendall.h>
+#include <benchmarkAlgorithm.h>
 #include <grank.h>
-#include <../header-only/grankMulti.h>
+#include <grankMulti.h>
+#include <kendall.h>
 #include <mccompletepathv2.h>
 #include <pprSingleSource.h>
-#include <benchmarkAlgorithm.h>
 
 using namespace std;
+using ppr::benchmarkAlgorithm;
 using ppr::grank;
 using ppr::grankMulti;
 using ppr::mccompletepathv2;
 using ppr::pprInternal::pprSingleSource;
-using ppr::benchmarkAlgorithm;
-
 
 /**
  * Imports a direct graph from a csv, every line is an edge in the form of:
  * node1, node2
  */
 unordered_map<int, vector<int>> importGraph(string fname);
-unordered_map<string, vector<string>> importGraph2(string fname);
 
 int main()
 {
-  unordered_map<int, vector<int>> graph = importGraph("standford.csv");
-  //unordered_map<string, vector<string>> graph = importGraph2("gnutella30.csv");
+  unordered_map<int, vector<int>> graph = importGraph("example.txt");
 
   //grank multi
   {
@@ -63,14 +60,14 @@ int main()
 
   //mc
   {
-    auto begin2 = std::chrono::steady_clock::now();
-    auto map2 = mccompletepathv2<int>(graph, 50, 200, 1000, 0.85);
-    auto end2 = std::chrono::steady_clock::now();
-    std::cout << "mc run-time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end2 - begin2).count() << " ms" << endl;
+    auto begin = std::chrono::steady_clock::now();
+    auto map = mccompletepathv2<int>(graph, 50, 200, 1000, 0.85);
+    auto end = std::chrono::steady_clock::now();
+    std::cout << "mc run-time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " ms" << endl;
 
-    auto bench2 = benchmarkAlgorithm(map2, graph, 200, true);
+    auto bench = benchmarkAlgorithm(map, graph, 200, true);
     cout << "-------" << endl;
-    for(auto& keyVal: bench2)
+    for(auto& keyVal: bench)
       cout << keyVal.first << "     " << keyVal.second << endl;
     cout << "-------" << endl;
   }
@@ -96,43 +93,6 @@ unordered_map<int, vector<int>> importGraph(string fname)
     tmp.erase(std::remove(tmp.begin(), tmp.end(), '\n'), tmp.end());
     int n1 = stoi(tmp.substr(0, pos));
     int n2 = stoi(tmp.substr(pos + 1));
-
-    //make sure that the second node is added to the map
-    //in case there are no edges starting from this node
-    graph[n2];
-
-    //checking to avoid repeated edges in the csv file
-    if(!edges[n1][n2])
-    {
-      edges[n1][n2] = true;
-      graph[n1].push_back(n2);
-      edgeCounter++;
-    }
-  }
-  cout << "nodes: " << graph.size() << " edges: " << edgeCounter << endl;
-
-  return graph;
-}
-
-unordered_map<string, vector<string>> importGraph2(string fname)
-{
-  size_t edgeCounter = 0;
-  ifstream inputFile(fname, ifstream::in);
-  unordered_map<string, vector<string>> graph;
-
-  //needed for repeating edges
-  unordered_map<string, unordered_map<string, bool>> edges;
-
-  string tmp = "";
-  string delimiter = ",";
-  while(getline(inputFile, tmp))
-  {
-    size_t pos = tmp.find(delimiter);
-    tmp.erase(std::remove(tmp.begin(), tmp.end(), '\r'), tmp.end());
-    tmp.erase(std::remove(tmp.begin(), tmp.end(), '\n'), tmp.end());
-    string n1 = tmp.substr(0, pos);
-    string n2 = tmp.substr(pos + 1);
-
 
     //make sure that the second node is added to the map
     //in case there are no edges starting from this node

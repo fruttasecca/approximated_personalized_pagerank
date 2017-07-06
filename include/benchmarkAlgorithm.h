@@ -11,9 +11,9 @@
 #include <random>
 #include <iostream>
 
-#include <pprSingleSource.h>
-#include <pprInternal.h>
-#include <kendall.h>
+#include <internal/pprInternal.h>
+#include <internal/pprSingleSource.h>
+#include <internal/kendall.h>
 
 using std::string;
 using std::unordered_map;

@@ -147,6 +147,8 @@ namespace ppr
           }
         }
       }
+
+      return partitions;
     }
 
     /**

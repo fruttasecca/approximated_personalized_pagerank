@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
+project(ppr C CXX)
 add_compile_options(-std=c++11)
 
 include_directories(include include/internal header-only)
@@ -11,4 +12,4 @@ project (ppr)
 
 #########main build
 add_executable(ppr src/main.cc ${HEADER_FILES} ${INTERNAL_HEADER_FILES})
-target_link_libraries(ppr pthread)
+

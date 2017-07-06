@@ -11,6 +11,7 @@ project (ppr)
 
 #########main build
 add_executable(ppr src/main.cc ${HEADER_FILES} ${INTERNAL_HEADER_FILES})
+target_link_libraries(ppr pthread)
 
 
 
@@ -47,6 +48,7 @@ test/mccompletepathv2Test.cc
 test/mccompletepathv2HeaderOnlyTest.cc
 test/grankMultiThreadTest.cc
 ${HEADER_FILES} ${INTERNAL_HEADER_FILES})
+target_link_libraries(pprTest pthread)
 target_link_libraries(pprTest gtest gtest_main)
 add_test(pprTest pprTest)
 #make it so that "make tests" will build pprTest and gtest
@@ -55,3 +57,4 @@ add_dependencies(tests pprTest)
 add_dependencies(pprTest gtest gtest_main gmock gmock_main)
 #exclude pprTest and gtest stuff from "make"
 set_target_properties(pprTest gtest gtest_main gmock gmock_main PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+

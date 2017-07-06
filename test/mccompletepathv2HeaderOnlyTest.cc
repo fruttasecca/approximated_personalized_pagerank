@@ -206,7 +206,7 @@ TEST(mccompletepathv2HeaderOnly, starGraphReversed)
 
   for(int i = 1; i < 6; i++)
     graph[i].push_back(i);
-  res =  mccompletepathv2(graph, 10, 30, 1000, 0.85);
+  res =  mccompletepathv2(graph, 10, 30, 200, 0.85);
   ASSERT_EQ(res.size(), graph.size());
   ASSERT_EQ(res[0].size(), graph.size());
   ASSERT_NEAR(res[0][0], 1.0, 10e-5);
@@ -214,7 +214,7 @@ TEST(mccompletepathv2HeaderOnly, starGraphReversed)
   {
     ASSERT_EQ(res[i].size(), 1);
     ASSERT_NEAR(res[i][0], 0, 10e-5);
-    ASSERT_GE(res[0][i], 1.0);
+    ASSERT_NEAR(res[0][i], res[i][i] * 0.85 / 5, 0.0001);
   }
 }
 

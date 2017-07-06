@@ -29,7 +29,7 @@ unordered_map<int, vector<int>> importGraph(string fname);
 
 int main()
 {
-  unordered_map<int, vector<int>> graph = importGraph("example.csv");
+  unordered_map<int, vector<int>> graph = importGraph("example.txt");
 
   //grank multi
   {

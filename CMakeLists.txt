@@ -11,4 +11,4 @@ project (ppr)
 
 #########main build
 add_executable(ppr src/main.cc ${HEADER_FILES} ${INTERNAL_HEADER_FILES})
-
+target_link_libraries(ppr pthread)

@@ -107,9 +107,10 @@ int main()
 	size_t iterations = 30;
 	double damping = 0.85;
 	double tolerance = 0.001;
+
 	unordered_map<int, vector<int>> graph;
 	for(int i = 0; i < 100; i++)
-		graph[i].push_back( (i+1)%100);
+		graph[i].push_back(( i +1 ) % 100);
 
 	auto ppr = grank(graph, K, L, iterations, damping, tolerance);
 
@@ -143,9 +144,10 @@ int main()
 	double damping = 0.85;
 	double tolerance = 0.001;
 	size_t nThreads = 4;
+
 	unordered_map<int, vector<int>> graph;
 	for(int i = 0; i < 100; i++)
-		graph[i].push_back( (i+1)%100);
+		graph[i].push_back((i + 1) % 100);
 
 	auto ppr = grankMulti(graph, K, L, iterations, damping, tolerance, nThreads);
 
@@ -177,14 +179,14 @@ int main()
 
     unordered_map<int, vector<int>> graph;
     for(int i = 0; i < 100; i++)
-        graph[i].push_back( (i+1)%100);
+        graph[i].push_back((i + 1) % 100);
 
     auto ppr = mccompletepathv2(graph, K, L, iterations, damping);
 
     return 0;
 }
 ```
-`K` and `L` work in the exact same way as in GRank (even the fact that `K > L` is strongly
+`K` and `L` work in the exact same way as in GRank (even the fact that having `L > K` is strongly
   suggested), same for the `damping.`  
 `Iterations` now stands for how many random walks are done for each node in the worst case,
 so we are talking about figures much higher than `iterations` in GRank.  
